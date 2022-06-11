@@ -9,13 +9,16 @@ const getPost = async (offset = 0, limit = 100) => {
       console.log("=======statusCode=====", statusCode);
       return { ...data };
     } catch (err) {
-    return { posts:[], next: false };
+    return { err };
   }
 };
 // Find a single list with a listId
 exports.getClubPosts = async (req, res) => {
   try {
-    const posts = await getPost();
+    const {offset, limit} = req?.query;
+    const parseIntOffset = parseInt(offset);
+    const parseIntLimit = parseInt(limit);
+    const posts = await getPost(parseIntOffset, parseIntLimit);
     res.status(200).json(posts ?? []);
   } catch (err) {
     res.status(500).json([]);
