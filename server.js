@@ -1,6 +1,7 @@
 const express = require('express'); 
 const bodyParser = require('body-parser');
 const { PORT } = require('./config/app.config');
+const {getTaxRate, getTaxCap} = require('./controllers/app.controllers');
 const port = PORT || 4000;
 
 const app = express();
@@ -13,10 +14,12 @@ app.use(function (req, res, next) {
   next();
 });
 
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 require("./routes/app.routes.js")(app);
+
 
 app.get('*', (req, res) => {
   res.send("Tefi Server is running...🚀")
