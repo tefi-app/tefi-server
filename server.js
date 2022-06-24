@@ -1,7 +1,6 @@
 const express = require('express'); 
 const bodyParser = require('body-parser');
 const { PORT } = require('./config/app.config');
-const {getTaxRate, getTaxCap} = require('./controllers/app.controllers');
 const port = PORT || 4000;
 
 const app = express();

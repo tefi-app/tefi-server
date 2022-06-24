@@ -1,13 +1,10 @@
 const ADDRESS = 'terra1lpccq0w9e36nlzhx3m6t8pphx8ncavslyul29g';
-const FCD_URL ='https://fcd.terra.dev';
-const LCD_URL = 'https://lcd.terra.dev';
-
+const {FCD_URL, LCD_URL} = require('../constants');
 const { curly } = require("node-libcurl");
 
 const getPost = async (offset = 0, limit = 100) => {
     try {
-      const { statusCode, data, headers } = await curly.get(`${FCD_URL}/v1/txs?offset=${offset}&limit=${limit}&account=${ADDRESS}`);
-      console.log("=======statusCode=====", statusCode);
+      const { data } = await curly.get(`${FCD_URL}/v1/txs?offset=${offset}&limit=${limit}&account=${ADDRESS}`);
       return { ...data };
     } catch (err) {
     return { err };
