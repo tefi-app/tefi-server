@@ -11,6 +11,18 @@ const getPost = async (offset = 0, limit = 100) => {
   }
 };
 
+//Get Transaction Info By TxHash
+exports.getTransactionInfo = async(req, res) => {
+  try {
+  const {txHash} = req.params;
+  const result = await curly.get(`${FCD_URL}/v1/tx/${txHash}`);
+  return res.status(200).json(result?.data ?? {});
+  }
+  catch(err) {
+    res.status(500).json('Unexpected Error!');
+  }
+}
+
 // Find a single list with a listId
 exports.getClubPosts = async (req, res) => {
   try {
