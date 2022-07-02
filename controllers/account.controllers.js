@@ -41,7 +41,7 @@ const generateBalanceInfo = (accountInfo, swapRates) => {
         const balance = math.evaluate(`${balanceInfo.available} / ${MICRO}`);
         const price = calculatePrice(balanceInfo.denom, swapRates);
         const value = calculateTokenUSTCValue(balance, balanceInfo.denom,swapRates);
-        return {balance, price, value, name: TERRA_SYMBOLS[balanceInfo.denom].name, symbol: TERRA_SYMBOLS[balanceInfo.denom].symbol}; 
+        return {balance, price, value, name: TERRA_SYMBOLS[balanceInfo.denom].name, symbol: TERRA_SYMBOLS[balanceInfo.denom].symbol, denom: balanceInfo.denom}; 
     });
     return balanceInfo;
 }
