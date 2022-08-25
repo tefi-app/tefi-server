@@ -1,9 +1,8 @@
 const { DGORA_TESTNET_CONTRACT_ADDRESS} = require('../constants');
 const {terraTestnetClient, terraClient} = require('../lcdClients');
 
-exports.queryThreadsByCategory = async (offset = 0, limit = 10, category, isTestnet) => {
+const queryThreadsByCategory = async (offset = 0, limit = 10, category, isTestnet) => {
     const queryClient  = isTestnet ? terraTestnetClient : terraClient;
-    try {
      const result = await queryClient.wasm.contractQuery(DGORA_TESTNET_CONTRACT_ADDRESS, {
         get_threads_by_category: {
             category,
@@ -12,9 +11,6 @@ exports.queryThreadsByCategory = async (offset = 0, limit = 10, category, isTest
           }
      });
     return result.entries;
-    } catch (err) {
-    return { err };
-  }
 };
 
 exports.queryThreads = async (req, res) => {
@@ -23,10 +19,10 @@ exports.queryThreads = async (req, res) => {
     const {category} = req?.params;
     const parsedIntOffset = !offset ? 0 : parseInt(offset);
     const parsedIntLimit = !limit ? 10 : parseInt(limit);
-    const result = await queryThreadsByCategory(parsedIntLimit, parsedIntOffset, category, isTestnet);
+    const result = await queryThreadsByCategory(parsedIntOffset, parsedIntLimit, category, isTestnet);
     res.status(200).json(result ?? []);
   } catch (err) {
-    res.status(500).json({info: err});
+    res.status(500).json({info: err.message});
   }
 };
 
