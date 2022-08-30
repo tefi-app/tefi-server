@@ -8,4 +8,5 @@ module.exports = (app) => {
     app.get("/treasury/tax_rate", App.getTaxRate);
     app.get("/account/:address", Account.getAccount);
     app.get("/dagora/threads/:category", DAgora.queryThreads);
+    app.get("/dagora/thread/:id", DAgora.queryThreadById);
   };
