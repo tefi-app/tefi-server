@@ -9,4 +9,5 @@ module.exports = (app) => {
     app.get("/account/:address", Account.getAccount);
     app.get("/dagora/threads/:category", DAgora.queryThreads);
     app.get("/dagora/thread/:id", DAgora.queryThreadById);
+    app.get("/dagora/thread/:id/replies", DAgora.queryRepliesByThreadId);
   };
