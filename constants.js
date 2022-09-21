@@ -1,5 +1,5 @@
 exports.FCD_URL ='https://fcd.terra.dev';
 exports.LCD_URL = 'https://lcd.terra.dev';
 exports.TESTNET_LCD_URL = 'https://pisco-lcd.terra.dev';
-exports.DGORA_TESTNET_CONTRACT_ADDRESS = 'terra1zrxh62sytlr9fzmeevv2gu7zd2c9jsxeaxsx0ezcl6c4lkh6u59qalvt90';
+exports.DGORA_TESTNET_CONTRACT_ADDRESS = 'terra1hayct9mh4muvyylhmtzv6usc3yykh25nl93wsd94z2dfzvapkdzsrvl5fv';
 exports.MICRO = 1000000;
