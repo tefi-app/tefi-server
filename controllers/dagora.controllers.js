@@ -1,5 +1,5 @@
 const { DGORA_TESTNET_CONTRACT_ADDRESS} = require('../constants');
-const {terraTestnetClient, terraClient} = require('../lcdClients');
+const {terraTestnetClient, terraClient} = require('../lib/lcdClients');
 
 const queryClientForThreadsByCategory = async (offset = 0, limit = 10, category, isTestnet) => {
     const queryClient  = isTestnet ? terraTestnetClient : terraClient;
@@ -42,6 +42,7 @@ exports.queryThreads = async (req, res) => {
     const parsedIntOffset = !offset ? 0 : parseInt(offset);
     const parsedIntLimit = !limit ? 10 : parseInt(limit);
     const result = await queryClientForThreadsByCategory(parsedIntOffset, parsedIntLimit, category, isTestnet);
+
     res.status(200).json(result ?? []);
   } catch (err) {
     res.status(500).json({info: err.message});
