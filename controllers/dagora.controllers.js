@@ -10,7 +10,8 @@ const queryClientForThreadsByCategory = async (offset = 0, limit = 10, category,
             offset
           }
      });
-    return result.entries;
+     console.log(result);
+    return result?.entries;
 };
 
 const queryClientForRepliesByThreadId = async (offset = 0, limit = 10, threadId, isTestnet) => {
@@ -37,12 +38,9 @@ const queryClientForThreadById = async (id, isTestnet) => {
 
 exports.queryThreads = async (req, res) => {
   try {
-    const {offset, limit, isTestnet} = req?.query;
+    const {offset,limit, isTestnet} = req;
     const {category} = req?.params;
-    const parsedIntOffset = !offset ? 0 : parseInt(offset);
-    const parsedIntLimit = !limit ? 10 : parseInt(limit);
-    const result = await queryClientForThreadsByCategory(parsedIntOffset, parsedIntLimit, category, isTestnet);
-
+    const result = await queryClientForThreadsByCategory(offset, limit, category, isTestnet);
     res.status(200).json(result ?? []);
   } catch (err) {
     res.status(500).json({info: err.message});
