@@ -12,4 +12,5 @@ module.exports = (app) => {
     app.get("/dagora/threads/:category",threadsCategoryMiddleware, DAgora.queryThreads);
     app.get("/dagora/thread/:id", DAgora.queryThreadById);
     app.get("/dagora/thread/:id/replies", DAgora.queryRepliesByThreadId);
+    app.post("/dagora/thread/cache", DAgora.saveThreadInCache);
   };

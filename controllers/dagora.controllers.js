@@ -1,5 +1,7 @@
-const { DGORA_TESTNET_CONTRACT_ADDRESS} = require('../constants');
+const { DGORA_TESTNET_CONTRACT_ADDRESS, MAX_CACHED_THREADS} = require('../constants');
 const {terraTestnetClient, terraClient} = require('../lib/lcdClients');
+const { redisClient } = require('../lib/redisClient');
+const { generateAgoraThreadsRedisKey } = require('../util/generateRedisKeys');
 
 const queryClientForThreadsByCategory = async (offset = 0, limit = 10, category, isTestnet) => {
     const queryClient  = isTestnet ? terraTestnetClient : terraClient;
@@ -10,7 +12,6 @@ const queryClientForThreadsByCategory = async (offset = 0, limit = 10, category,
             offset
           }
      });
-     console.log(result);
     return result?.entries;
 };
 
@@ -82,5 +83,27 @@ exports.queryRepliesByThreadId = async (req, res) => {
     return res.status(500).json({info: err.message});
   }
 };
+
+exports.saveThreadInCache = async(req, res) => {
+  const {thread} = req.body;
+  const {isTestnet} = req.query;
+  
+  if(!thread?.id || !thread?.title || !thread?.content ||!thread?.author || !thread.category) {
+    return res.status(400).json({info: "Invalid Thread Data"});
+  };
+
+  try {
+    const key = generateAgoraThreadsRedisKey(isTestnet, thread.category);
+   await redisClient.lpush(key, JSON.stringify(thread));
+   await redisClient.ltrim(key, 0 , MAX_CACHED_THREADS);
+
+    return res.status(200).json({info: "success"});
+  }
+  catch(err) {
+    return res.status(500).json({info: "Error Saving Thread in Cache"});
+
+  }
+
+}
 
 
