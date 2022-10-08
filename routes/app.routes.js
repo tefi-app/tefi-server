@@ -1,4 +1,4 @@
-const {threadsCategoryMiddleware} = require('../middlewares/agoraMiddlewares');
+const {threadsCategoryMiddleware, threadsRepliesMiddleware} = require('../middlewares/agoraMiddlewares');
 
 module.exports = (app) => {
     const App = require('../controllers/app.controllers');
@@ -11,6 +11,6 @@ module.exports = (app) => {
     app.get("/account/:address", Account.getAccount);
     app.get("/dagora/threads/:category",threadsCategoryMiddleware, DAgora.queryThreads);
     app.get("/dagora/thread/:id", DAgora.queryThreadById);
-    app.get("/dagora/thread/:id/replies", DAgora.queryRepliesByThreadId);
+    app.get("/dagora/thread/:id/replies",threadsRepliesMiddleware, DAgora.queryRepliesByThreadId);
     app.post("/dagora/thread/cache", DAgora.saveThreadInCache);
   };
