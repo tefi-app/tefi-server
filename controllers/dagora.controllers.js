@@ -96,7 +96,29 @@ exports.saveThreadInCache = async(req, res) => {
     return res.status(500).json({info: "Error Saving Thread in Cache"});
 
   }
+}
+
+exports.saveThreadRepliesInCache = async(req, res) => {
+  const {reply} = req.body;
+  const {isTestnet} = req.query;
   
+  if(!reply?.author || !reply?.comment || !reply?.comment_id ||!reply?.thread_id) {
+    return res.status(400).json({info: "Invalid Thread Reply Data"});
+  };
+
+  try {
+    const keySuffix  = reply.thread_id + ":replies";
+    const key = generateAgoraThreadsRedisKey(isTestnet, keySuffix);
+    await redisClient.lpush(key, JSON.stringify(reply));
+    await redisClient.ltrim(key, 0 , MAX_CACHED_THREADS);
+
+    return res.status(200).json({info: "success"});
+  }
+  catch(err) {
+    console.log(err);
+    return res.status(500).json({info: "Error Saving Thread Reply in Cache"});
+
+  }
 }
 
 

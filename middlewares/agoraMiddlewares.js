@@ -65,4 +65,4 @@ const threadsRepliesMiddleware = async (req, res, next) => {
  
 }
 
-module.exports = {threadsRepliesMiddleware};
+module.exports = {threadsCategoryMiddleware, threadsRepliesMiddleware}
