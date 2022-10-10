@@ -1,5 +1,5 @@
 const ADDRESS = 'terra1lpccq0w9e36nlzhx3m6t8pphx8ncavslyul29g';
-const {FCD_URL, LCD_URL} = require('../constants');
+const {FCD_URL, LCD_URL, TESTNET_LCD_URL} = require('../constants');
 const { curly } = require("node-libcurl");
 
 const getPost = async (offset = 0, limit = 100) => {
@@ -15,7 +15,11 @@ const getPost = async (offset = 0, limit = 100) => {
 exports.getTransactionInfo = async(req, res) => {
   try {
   const {txHash} = req.params;
-  const result = await curly.get(`${FCD_URL}/v1/tx/${txHash}`);
+  const {isTestnet} = req.query;
+
+
+  const lcdUrl = isTestnet ? TESTNET_LCD_URL : LCD_URL
+  const result = await curly.get(`${lcdUrl}/cosmos/tx/v1beta1/txs/${txHash}`);
   return res.status(200).json(result?.data ?? {});
   }
   catch(err) {
