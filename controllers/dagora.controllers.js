@@ -1,41 +1,6 @@
-const { DGORA_TESTNET_CONTRACT_ADDRESS, MAX_CACHED_THREADS} = require('../constants');
-const {terraTestnetClient, terraClient} = require('../lib/lcdClients');
 const { redisClient } = require('../lib/redisClient');
 const { generateAgoraThreadsRedisKey } = require('../util/generateRedisKeys');
-
-const queryClientForThreadsByCategory = async (offset = 0, limit = 10, category, isTestnet) => {
-    const queryClient  = isTestnet ? terraTestnetClient : terraClient;
-     const result = await queryClient.wasm.contractQuery(DGORA_TESTNET_CONTRACT_ADDRESS, {
-        get_threads_by_category: {
-            category,
-            limit,
-            offset
-          }
-     });
-    return result?.entries;
-};
-
-const queryClientForRepliesByThreadId = async (offset = 0, limit = 10, threadId, isTestnet) => {
-  const queryClient  = isTestnet ? terraTestnetClient : terraClient;
-   const result = await queryClient.wasm.contractQuery(DGORA_TESTNET_CONTRACT_ADDRESS, {
-       get_comments_by_thread: {
-          thread_id: threadId,
-          limit,
-          offset
-        }
-   });
-  return result.entries;
-};
-
-
-const queryClientForThreadById = async (id, isTestnet) => {
-  const queryClient  = isTestnet ? terraTestnetClient : terraClient;
-   return queryClient.wasm.contractQuery(DGORA_TESTNET_CONTRACT_ADDRESS, {
-      get_thread_by_id: {
-          id,
-        }
-   });
-};
+const { queryClientForThreadsByCategory, queryClientForRepliesByThreadId, queryClientForThreadById} = require('../helpers/queries');
 
 exports.queryThreads = async (req, res) => {
   try {
