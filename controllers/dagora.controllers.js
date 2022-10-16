@@ -1,6 +1,7 @@
 const { redisClient } = require('../lib/redisClient');
 const { generateAgoraThreadsRedisKey } = require('../util/generateRedisKeys');
 const { queryClientForThreadsByCategory, queryClientForRepliesByThreadId, queryClientForThreadById} = require('../helpers/queries');
+const { MAX_CACHED_THREADS } = require('../constants');
 
 exports.queryThreads = async (req, res) => {
   try {
