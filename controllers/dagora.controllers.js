@@ -44,17 +44,18 @@ exports.queryRepliesByThreadId = async (req, res) => {
 };
 
 exports.saveThreadInCache = async(req, res) => {
-  const {thread} = req.body;
+  const {thread_id} = req.body;
   const {isTestnet} = req.query;
   
-  if(!thread?.id || !thread?.title || !thread?.content ||!thread?.author || !thread.category) {
-    return res.status(400).json({info: "Invalid Thread Data"});
+  if(!thread_id) {
+    return res.status(400).json({info: "Invalid Thread ID"});
   };
 
   try {
+    const thread = await queryClientForThreadById(parseInt(thread_id), true);
     const key = generateAgoraThreadsRedisKey(isTestnet, thread.category);
-   await redisClient.lpush(key, JSON.stringify(thread));
-   await redisClient.ltrim(key, 0 , MAX_CACHED_THREADS);
+    await redisClient.lpush(key, JSON.stringify(thread));
+    await redisClient.ltrim(key, 0 , MAX_CACHED_THREADS);
 
     return res.status(200).json({info: "success"});
   }
