@@ -1,15 +1,12 @@
 const { redisClient } = require('../lib/redisClient');
 
-const getReplyIndexFromList = async (key, comment_id) => {
-    let limit = 499;
-    let offset = 0;
-  
+const getCacheItemIndexFromList = async (key,property,id, offset = 0, limit = 499) => {
     const result = await redisClient.lrange(key, offset, limit);
     let elementIndex = -1;
     for (let i = 0 ; i<=limit; i++) {
       if(result[i]) {
         const parsedResult = JSON.parse(result[i]);
-        if(parsedResult.comment_id === comment_id) {
+        if(parsedResult[property] === id) {
           elementIndex = i;
           break;
         }
@@ -22,4 +19,4 @@ const getReplyIndexFromList = async (key, comment_id) => {
   }
 
 
-  module.exports = {getReplyIndexFromList};
+  module.exports = {getCacheItemIndexFromList};
