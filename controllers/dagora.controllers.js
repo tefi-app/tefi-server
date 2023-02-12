@@ -1,7 +1,7 @@
-const { redisClient } = require('../lib/redisClient');
-const { generateAgoraThreadsRedisKey } = require('../util/generateRedisKeys');
+// const { redisClient } = require('../lib/redisClient');
+// const { generateAgoraThreadsRedisKey } = require('../util/generateRedisKeys');
 const { queryClientForThreadsByCategory, queryClientForRepliesByThreadId, queryClientForThreadById} = require('../helpers/queries');
-const { getCacheItemIndexFromList } = require('../helpers/cache');
+// const { getCacheItemIndexFromList } = require('../helpers/cache');
 const { MAX_CACHED_THREADS } = require('../constants');
 
 exports.queryThreads = async (req, res) => {
@@ -44,98 +44,98 @@ exports.queryRepliesByThreadId = async (req, res) => {
   }
 };
 
-exports.saveThreadInCache = async(req, res) => {
-  const {thread_id} = req.body;
-  const {isTestnet} = req.query;
+// exports.saveThreadInCache = async(req, res) => {
+//   const {thread_id} = req.body;
+//   const {isTestnet} = req.query;
   
-  if(!thread_id) {
-    return res.status(400).json({info: "Invalid Thread ID"});
-  };
+//   if(!thread_id) {
+//     return res.status(400).json({info: "Invalid Thread ID"});
+//   };
 
-  try {
-    const thread = await queryClientForThreadById(parseInt(thread_id), true);
-    const key = generateAgoraThreadsRedisKey(isTestnet, thread.category);
-    await redisClient.lpush(key, JSON.stringify(thread));
-    await redisClient.ltrim(key, 0 , MAX_CACHED_THREADS);
+//   try {
+//     const thread = await queryClientForThreadById(parseInt(thread_id), true);
+//     const key = generateAgoraThreadsRedisKey(isTestnet, thread.category);
+//     await redisClient.lpush(key, JSON.stringify(thread));
+//     await redisClient.ltrim(key, 0 , MAX_CACHED_THREADS);
 
-    return res.status(200).json({info: "success"});
-  }
-  catch(err) {
-    return res.status(500).json({info: "Error Saving Thread in Cache"});
+//     return res.status(200).json({info: "success"});
+//   }
+//   catch(err) {
+//     return res.status(500).json({info: "Error Saving Thread in Cache"});
 
-  }
-}
+//   }
+// }
 
-exports.saveThreadRepliesInCache = async(req, res) => {
-  const {reply} = req.body;
-  const {isTestnet} = req.query;
+// exports.saveThreadRepliesInCache = async(req, res) => {
+//   const {reply} = req.body;
+//   const {isTestnet} = req.query;
   
-  if(!reply?.author || !reply?.comment || !reply?.comment_id ||!reply?.thread_id) {
-    return res.status(400).json({info: "Invalid Thread Reply Data"});
-  };
+//   if(!reply?.author || !reply?.comment || !reply?.comment_id ||!reply?.thread_id) {
+//     return res.status(400).json({info: "Invalid Thread Reply Data"});
+//   };
 
-  try {
-    const keySuffix  = reply.thread_id + ":replies";
-    const key = generateAgoraThreadsRedisKey(isTestnet, keySuffix);
-    await redisClient.lpush(key, JSON.stringify(reply));
-    await redisClient.ltrim(key, 0 , MAX_CACHED_THREADS);
+//   try {
+//     const keySuffix  = reply.thread_id + ":replies";
+//     const key = generateAgoraThreadsRedisKey(isTestnet, keySuffix);
+//     await redisClient.lpush(key, JSON.stringify(reply));
+//     await redisClient.ltrim(key, 0 , MAX_CACHED_THREADS);
 
-    return res.status(200).json({info: "success"});
-  }
-  catch(err) {
-    console.log(err);
-    return res.status(500).json({info: "Error Saving Thread Reply in Cache"});
+//     return res.status(200).json({info: "success"});
+//   }
+//   catch(err) {
+//     console.log(err);
+//     return res.status(500).json({info: "Error Saving Thread Reply in Cache"});
 
-  }
-}
+//   }
+// }
 
 
-exports.updateThreadReplyInCache = async(req, res) => {
-  const {reply} = req.body;
-  const {isTestnet} = req.query;
+// exports.updateThreadReplyInCache = async(req, res) => {
+//   const {reply} = req.body;
+//   const {isTestnet} = req.query;
   
-  if(!reply?.author || !reply?.comment || !reply?.comment_id ||!reply?.thread_id) {
-    return res.status(400).json({info: "Invalid Thread Reply Data"});
-  };
+//   if(!reply?.author || !reply?.comment || !reply?.comment_id ||!reply?.thread_id) {
+//     return res.status(400).json({info: "Invalid Thread Reply Data"});
+//   };
 
-  try {
-    const keySuffix  = reply.thread_id + ":replies";
-    const key = generateAgoraThreadsRedisKey(isTestnet, keySuffix);
-    const elementIndex = await getCacheItemIndexFromList(key, 'comment_id', reply.comment_id);
-    if(elementIndex === -1) {
-      return res.status(200).json({info: "cache not found"});
-    }
-    redisClient.lset(key, elementIndex, JSON.stringify(reply));
-    return res.status(200).json({info: "success"});
-  }
-  catch(err) {
-    return res.status(500).json({info: "Error Saving Thread Reply in Cache"});
+//   try {
+//     const keySuffix  = reply.thread_id + ":replies";
+//     const key = generateAgoraThreadsRedisKey(isTestnet, keySuffix);
+//     const elementIndex = await getCacheItemIndexFromList(key, 'comment_id', reply.comment_id);
+//     if(elementIndex === -1) {
+//       return res.status(200).json({info: "cache not found"});
+//     }
+//     redisClient.lset(key, elementIndex, JSON.stringify(reply));
+//     return res.status(200).json({info: "success"});
+//   }
+//   catch(err) {
+//     return res.status(500).json({info: "Error Saving Thread Reply in Cache"});
 
-  }
-}
+//   }
+// }
 
-exports.updateThreadInCache = async(req, res) => {
-  const {thread} = req.body;
-  const {isTestnet} = req.query;
+// exports.updateThreadInCache = async(req, res) => {
+//   const {thread} = req.body;
+//   const {isTestnet} = req.query;
   
-  if(!thread?.author || !thread?.id || !thread?.title ||!thread?.content || !thread.category) {
-    return res.status(400).json({info: "Invalid Thread Data"});
-  };
+//   if(!thread?.author || !thread?.id || !thread?.title ||!thread?.content || !thread.category) {
+//     return res.status(400).json({info: "Invalid Thread Data"});
+//   };
 
-  try {
-    const key = generateAgoraThreadsRedisKey(isTestnet, thread.category);
-    const elementIndex = await getCacheItemIndexFromList(key, 'id', thread.id);
-    if(elementIndex === -1) {
-      return res.status(200).json({info: "cache not found"});
-    }
-    redisClient.lset(key, elementIndex, JSON.stringify(thread));
-    return res.status(200).json({info: "success"});
-  }
-  catch(err) {
-    console.log(err);
-    return res.status(500).json({info: "Error Saving Thread in Cache"});
+//   try {
+//     const key = generateAgoraThreadsRedisKey(isTestnet, thread.category);
+//     const elementIndex = await getCacheItemIndexFromList(key, 'id', thread.id);
+//     if(elementIndex === -1) {
+//       return res.status(200).json({info: "cache not found"});
+//     }
+//     redisClient.lset(key, elementIndex, JSON.stringify(thread));
+//     return res.status(200).json({info: "success"});
+//   }
+//   catch(err) {
+//     console.log(err);
+//     return res.status(500).json({info: "Error Saving Thread in Cache"});
 
-  }
-}
+//   }
+// }
 
 
